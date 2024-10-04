@@ -1,8 +1,8 @@
 import { StyleSheet, Text, View } from "react-native";
 
-const PlayersScreen=()=>(
+const TeamsScreen=()=>(
     <View style={styles.container}>
-        <Text style={styles.text}>Players Screen</Text>
+        <Text style={styles.text}>Teams Screen</Text>
     </View>
 
 );
@@ -18,4 +18,4 @@ const styles=StyleSheet.create({
         fontSize:24,
     }
 });
-export default PlayersScreen;
+export default TeamsScreen;
