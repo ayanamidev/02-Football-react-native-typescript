@@ -1,21 +1,58 @@
-import { StyleSheet, Text, View } from "react-native";
+import TeamCard from "@/components/TeamCard";
+import { Team } from "@/types/app";
+import { useState } from "react";
+import { Alert, FlatList, StyleSheet, Text, View } from "react-native";
+import { initialTeams} from "@/db/teams"
 
-const TeamsScreen=()=>(
-    <View style={styles.container}>
-        <Text style={styles.text}>Teams Screen</Text>
-    </View>
 
-);
+const TeamsScreen = () =>{
+  
+  const [teams, setTeams] = useState<Team[]>(initialTeams);
 
-const styles=StyleSheet.create({
-    container:{
-        flex:1,
-        justifyContent:"center",
-        alignItems:"center",
-    },
-    text:{
-        textAlign: "center",
-        fontSize:24,
-    }
-});
+  const removeTeam = (team:Team) => {
+    Alert.alert("Remove team", `Are you sure you want to remove ${team.name}?`, [
+      { text: "Cancel"},
+      {
+        text: "Remove",
+        onPress: () => setTeams(teams.filter(t=> t.id != team.id)),
+      }
+
+    ]);
+  }
+
+  return(
+  <FlatList
+    data={teams}
+    keyExtractor={(team) => team.id.toString()}
+    renderItem={({ item }) => (
+      <TeamCard
+        team={item}
+        edit={() => console.log(`Editing ${item.name} (id: ${item.id})`)}
+        remove={() => removeTeam(item)}
+      />
+    )}
+    ListEmptyComponent={() => (
+      <View style={styles.container}>
+        <Text style={styles.text}>No teams found</Text>
+      </View>
+    )}
+  /> 
+  );
+  
+  
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    marginTop: 10,
+  },
+  text: {
+    textAlign: "center",
+    fontWeight: "bold",
+    fontSize: 24,
+  }
+})
+
 export default TeamsScreen;

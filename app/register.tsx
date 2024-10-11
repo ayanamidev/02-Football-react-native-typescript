@@ -12,31 +12,41 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const formSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
   password: z.string().min(6, "Password must be a least 6 characters long"),
+  confirmPassword: z
+    .string()
+    .min(6, "Password must be a least 6 characters long"),
 });
 
-const LoginFormScreen = () => {
+const RegisterFormScreen = () => {
   const { control, handleSubmit } = useForm({
     defaultValues: {
       email: "",
       password: "",
+      confirmPassword: "",
     },
     resolver: zodResolver(formSchema),
     mode: "onBlur",
     reValidateMode: "onBlur",
   });
 
-  const onSubmit = async (formData: { email: string; password: string }) => {
-    if (formData.email === "admin@liceolapaz.net") {
+  const onSubmit = async (formData: {
+    email: string;
+    password: string;
+    confirmPassword: string;
+  }) => {
+    if (formData.email == "admin@liceolapaz.net") {
+      Alert.alert("User already exists");
+    } else if (formData.password != formData.confirmPassword) {
+      Alert.alert("Password dont´t match");
+    } else {
       await AsyncStorage.setItem("userEmail", formData.email);
       router.push("/teams");
-    } else {
-      Alert.alert("Invalid credentials");
     }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Login</Text>
+      <Text style={styles.text}>Register</Text>
       <FormInput
         control={control}
         name="email"
@@ -53,10 +63,18 @@ const LoginFormScreen = () => {
         placeholder="Enter your password"
         secureTextEntry={true} //tambien se pueden poner oslo el nombre, cuando son true y false(scureTextEntry seria ya true)
       />
-      <Link href="/register" style={styles.link}>
-        Dont´t have account yet? Register here
+      <FormInput
+        control={control}
+        name="confirmPassword"
+        autoCapitalize="none" //
+        inputMode="text"
+        placeholder="Repeat your password"
+        secureTextEntry={true} //tambien se pueden poner oslo el nombre, cuando son true y false(scureTextEntry seria ya true)
+      />
+      <Link href="/" style={styles.link}>
+        Already have account? Login here
       </Link>
-      <Button onPress={handleSubmit(onSubmit)} text="Login" />
+      <Button onPress={handleSubmit(onSubmit)} text="Register" />
     </View>
   );
 };
@@ -83,4 +101,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LoginFormScreen;
+export default RegisterFormScreen;
